@@ -13,8 +13,6 @@ const { todos } = db
 const App = () => {
   const allItems = useLiveQuery(() => todos.toArray(), [])
 
-  console.log('===>', allItems)
-
   const addTask = async (event) => {
     event.preventDefault()
     const taskField = document.querySelector('#TaskInput')
@@ -28,6 +26,10 @@ const App = () => {
   }
 
   const deleteTask = async (id) => todos.delete(id)
+
+  const toggleStatus = async (id, event) => {
+    await todos.update(id, { completed: !!event.target.checked })
+  }
 
   return (
     <div className="container">
@@ -55,6 +57,7 @@ const App = () => {
                   type="checkbox"
                   defaultChecked={completed}
                   className="checkbox-blue"
+                  onChange={event => toggleStatus(id, event)} 
                 />
                 <span className={`black-text ${completed && 'strike-text'}`}>{task}</span>
               </label>
