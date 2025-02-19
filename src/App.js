@@ -13,6 +13,8 @@ const { todos } = db
 const App = () => {
   const allItems = useLiveQuery(() => todos.toArray(), [])
 
+  console.log('===>', allItems)
+
   const addTask = async (event) => {
     event.preventDefault()
     const taskField = document.querySelector('#TaskInput')
@@ -24,6 +26,8 @@ const App = () => {
 
     taskField['value'] = ''
   }
+
+  const deleteTask = async (id) => todos.delete(id)
 
   return (
     <div className="container">
@@ -43,25 +47,26 @@ const App = () => {
 
       <div className="card white darken-1">
         <div className="card-content">
-          <div className="row">
+          {allItems?.map(({ id, completed, task }) => (
+            <div className="row" key={id}>
             <p className="col s10">
               <label>
-                <input type="checkbox" checked className="checkbox-blue" />
-                <span className="black-tex strike-text">Call John Legend</span>
+                <input
+                  type="checkbox"
+                  defaultChecked={completed}
+                  className="checkbox-blue"
+                />
+                <span className={`black-text ${completed && 'strike-text'}`}>{task}</span>
               </label>
             </p>
-            <i className="col s2 material-icons delete-button">delete</i>
+            <i
+              onClick={() => deleteTask(id)}
+              className="col s2 material-icons delete-button"
+            >
+              delete
+            </i>
           </div>
-
-          <div className="row">
-            <p className="col s10">
-              <label>
-                <input type="checkbox" className="checkbox-blue" />
-                <span className="black-tex">Do my laundry</span>
-              </label>
-            </p>
-            <i className="col s2 material-icons delete-button">delete</i>
-          </div>
+          ))}
         </div>
       </div>
     </div>
