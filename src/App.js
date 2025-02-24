@@ -1,27 +1,36 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import { Dexie } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 const db = new Dexie('todoApp')
 db.version(1).stores({
-  todos: '++id, task,completed, date'
+  todos: '++id, task, completed, date'
 })
 
 const { todos } = db
 
 const App = () => {
   const allItems = useLiveQuery(() => todos.toArray(), [])
+  const [latestTask, setLatestTask] = useState('')
+  const [latestId, setLatestId] = useState('')
+
+  const completedTasks = allItems?.filter(item => item.completed).length || 0
+  const totalTasks = allItems?.length || 0
 
   const addTask = async (event) => {
     event.preventDefault()
     const taskField = document.querySelector('#TaskInput')
     
-    await todos.add({
+    const id = await todos.add({
       task: taskField['value'],
-      completed: false
+      completed: false,
+      date: new Date()
     })
 
+    setLatestTask(taskField['value'])
+    setLatestId(id.toString())
+    
     taskField['value'] = ''
   }
 
@@ -30,6 +39,18 @@ const App = () => {
   const toggleStatus = async (id, event) => {
     await todos.update(id, { completed: !!event.target.checked })
   }
+
+  const TaskTracker = () => (
+    <div className="task-tracker">
+      <div className="progress-circle">
+        {completedTasks}/{totalTasks}
+      </div>
+      <p>Way to go!</p>
+      <p className="todo-message">
+        {'ToDo task "' + (latestTask || 'task') + '" successfully added. Got id ' + (latestId || 'id')}
+      </p>
+    </div>
+  )
 
   return (
     <div className="container">
@@ -46,31 +67,34 @@ const App = () => {
           Add
         </button>
       </form>
-
-      <div className="card white darken-1">
-        <div className="card-content">
-          {allItems?.map(({ id, completed, task }) => (
-            <div className="row" key={id}>
-            <p className="col s10">
-              <label>
-                <input
-                  type="checkbox"
-                  defaultChecked={completed}
-                  className="checkbox-blue"
-                  onChange={event => toggleStatus(id, event)} 
-                />
-                <span className={`black-text ${completed && 'strike-text'}`}>{task}</span>
-              </label>
-            </p>
-            <i
-              onClick={() => deleteTask(id)}
-              className="col s2 material-icons delete-button"
-            >
-              delete
-            </i>
+  
+      <div className="todo-layout">
+        <div className="card white darken-1 todo-list">
+          <div className="card-content">
+            {allItems?.map(({ id, completed, task }) => (
+              <div className="row" key={id}>
+                <p className="col s10">
+                  <label>
+                    <input
+                      type="checkbox"
+                      defaultChecked={completed}
+                      className="checkbox-blue"
+                      onChange={event => toggleStatus(id, event)} 
+                    />
+                    <span className={`black-text ${completed && 'strike-text'}`}>{task}</span>
+                  </label>
+                </p>
+                <i
+                  onClick={() => deleteTask(id)}
+                  className="col s2 material-icons delete-button"
+                >
+                  delete
+                </i>
+              </div>
+            ))}
           </div>
-          ))}
         </div>
+        <TaskTracker />
       </div>
     </div>
   )
