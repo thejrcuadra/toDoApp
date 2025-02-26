@@ -25,6 +25,7 @@
 
 .strike-text {
   text-decoration: line-through;
+  color: #888;
 }
 
 .todo-layout {
@@ -96,6 +97,16 @@
   font-size: 14px;
 }
 
+.list-name-input:focus {
+  outline: 2px solid teal;
+  box-shadow: 0 0 5px rgba(0, 121, 107, 0.5);
+}
+
+.list-name-input.error {
+  border-color: #ff4444;
+  background-color: #ffebee;
+}
+
 .add-list-btn {
   background-color: teal;
   color: white;
@@ -112,4 +123,74 @@
 
 .add-list-btn:active {
   margin-top: 2px;
+}
+
+.add-list-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.todo-instance {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+}
+
+.todo-instance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.add-task-form {
+  margin-top: 10px;
+}
+
+.add-task-form input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+}
+
+.add-item-form input:focus {
+  outline: 2px solid teal;
+  box-shadow: 0 0 5px rgba(0, 121, 107, 0.5);
+}
+
+.delete-button, .add-list-btn, .add-item-form .btn {
+  transition: margin-top 0.1s ease;
+}
+
+.checkbox-unchecked:hover {
+  background-color: #f0f0f0;
+}
+
+.todo-item:hover {
+  background-color: #f9f9f9;
+}
+
+.todo-date {
+  font-size: 12px;
+  color: #666;
+  margin-left: 5px;
+}
+
+::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .todo-layout {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .todo-list {
+    max-width: 100%;
+  }
+  .tracker-section {
+    max-width: 100%;
+  }
 }
