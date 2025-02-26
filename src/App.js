@@ -21,7 +21,8 @@ const App = () => {
   const completedTasks = allItems?.filter(item => item.completed).length || 0
   const totalTasks = allItems?.length || 0
 
-  const addNewList = async () => {
+  const addNewList = async (event) => {
+    if (event) event.preventDefault()
     if (listName.trim()) {
       await db.lists.add({
         name: listName,
@@ -29,6 +30,10 @@ const App = () => {
       })
       setListName('')
     }
+  }
+
+  const deleteList = async (id) => {
+    await db.lists.delete(id)
   }
 
   const addTask = async (event) => {
@@ -46,6 +51,7 @@ const App = () => {
     
     taskField['value'] = ''
   }
+
   const deleteTask = async (id) => todos.delete(id)
 
   const toggleStatus = async (id, event) => {
@@ -53,7 +59,7 @@ const App = () => {
   }
 
   const TaskTracker = () => (
-    <div className="task-tracker">
+    <div className="task-tracker" style={{ textAlign: 'center' }}>
       <div className="progress-circle">
         {completedTasks}/{totalTasks}
       </div>
@@ -105,21 +111,43 @@ const App = () => {
               </div>
             ))}
           </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <TaskTracker />
+          </div>
         </div>
         <div className="tracker-section">
-          <TaskTracker />
           <div className="new-list-section">
             <p>Give your list a name:</p>
-            <input
-              type="text"
-              value={listName}
-              onChange={(e) => setListName(e.target.value)}
-              placeholder="Name of list..."
-              className="list-name-input"
-            />
+            <form onSubmit={addNewList}>
+              <input
+                type="text"
+                value={listName}
+                onChange={(e) => setListName(e.target.value)}
+                placeholder="Name of list..."
+                className="list-name-input"
+              />
+            </form>
             <button onClick={addNewList} className="waves-effect btn teal add-list-btn">
               ≡ Add another list
             </button>
+            {lists.length > 0 && (
+              <div className="existing-lists">
+                <p>Existing lists:</p>
+                <ul>
+                  {lists.map(list => (
+                    <li key={list.id} className="row">
+                      <span className="col s10">{list.name}</span>
+                      <i
+                        onClick={() => deleteList(list.id)}
+                        className="col s2 material-icons delete-button"
+                      >
+                        delete
+                      </i>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
