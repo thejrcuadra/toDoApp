@@ -1,5 +1,8 @@
 .container {
-  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Adjusted to match the full width of the second image */
 }
 
 .delete-button:hover {
@@ -12,6 +15,8 @@
 
 .add-item-form {
   margin-bottom: 5em;
+  width: 100%;
+  max-width: 500px;
 }
 
 .add-item-form .btn:active {
@@ -19,17 +24,35 @@
 }
 
 .strike-text {
-  text-decoration: line-through
+  text-decoration: line-through;
+}
+
+.todo-layout {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.todo-list {
+  flex: 1;
+  max-width: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
 .task-tracker {
-  background-color: white; 
+  background-color: white;
   border: 2px solid teal;
   border-radius: 5px;
   padding: 20px;
   width: 300px;
-  margin: 20px auto;
+  margin: 0;
   text-align: center;
+  flex: 0 0 40%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .progress-circle {
@@ -45,4 +68,48 @@
 
 .todo-message {
   margin-top: 20px;
+  font-style: italic;
+}
+
+.tracker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  max-width: 40%;
+}
+
+.new-list-section {
+  background-color: white;
+  border: 2px solid teal;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-name-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-list-btn {
+  background-color: teal;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-list-btn:hover {
+  background-color: #00796b;
+}
+
+.add-list-btn:active {
+  margin-top: 2px;
 }

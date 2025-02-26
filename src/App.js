@@ -1,22 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import { Dexie } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 const db = new Dexie('todoApp')
 db.version(1).stores({
-  todos: '++id, task, completed, date'
+  todos: '++id, task, completed, date',
+  lists: '++id, name'
 })
 
 const { todos } = db
 
 const App = () => {
   const allItems = useLiveQuery(() => todos.toArray(), [])
+  const lists = useLiveQuery(() => db.lists.toArray(), []) || []
   const [latestTask, setLatestTask] = useState('')
+  const [listName, setListName] = useState('')
   const [latestId, setLatestId] = useState('')
 
   const completedTasks = allItems?.filter(item => item.completed).length || 0
   const totalTasks = allItems?.length || 0
+
+  const addNewList = async () => {
+    if (listName.trim()) {
+      await db.lists.add({
+        name: listName,
+        todos: []
+      })
+      setListName('')
+    }
+  }
 
   const addTask = async (event) => {
     event.preventDefault()
@@ -33,7 +46,6 @@ const App = () => {
     
     taskField['value'] = ''
   }
-
   const deleteTask = async (id) => todos.delete(id)
 
   const toggleStatus = async (id, event) => {
@@ -94,7 +106,22 @@ const App = () => {
             ))}
           </div>
         </div>
-        <TaskTracker />
+        <div className="tracker-section">
+          <TaskTracker />
+          <div className="new-list-section">
+            <p>Give your list a name:</p>
+            <input
+              type="text"
+              value={listName}
+              onChange={(e) => setListName(e.target.value)}
+              placeholder="Name of list..."
+              className="list-name-input"
+            />
+            <button onClick={addNewList} className="waves-effect btn teal add-list-btn">
+              ≡ Add another list
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
